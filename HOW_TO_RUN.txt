@@ -1,0 +1,36 @@
+╔══════════════════════════════════════════════╗
+║         DermAI — How To Run                 ║
+╚══════════════════════════════════════════════╝
+
+STEP 1 — Open VS Code
+  Open the DermAI folder in VS Code
+
+STEP 2 — Open Terminal in VS Code
+  Press Ctrl + ` (backtick) to open terminal
+
+STEP 3 — Install libraries (only once!)
+  Type this and press Enter:
+  pip install flask flask-cors tensorflow==2.12.0 numpy Pillow
+
+STEP 4 — Run Flask server
+  Type this and press Enter:
+  python app.py
+
+STEP 5 — Open the app
+  Open your browser and go to:
+  http://127.0.0.1:5000
+
+That's it! Your DermAI app is running with real AI! 🚀
+
+═══════════════════════════════════════════════
+PROJECT STRUCTURE:
+═══════════════════════════════════════════════
+DermAI/
+├── app.py              ← Flask backend (runs AI models)
+├── requirements.txt    ← Python libraries needed
+├── HOW_TO_RUN.txt      ← This file
+├── model/
+│   ├── acne_model.h5               ← Your acne AI model
+│   └── KlasifikasiWajah-pest-65.23.h5  ← Your skin type model
+└── static/
+    └── index.html      ← Frontend (4 pages)
