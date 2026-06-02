@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DermAI — Smart Skincare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#C8707A;--rose-light:#F7E8EA;--rose-mid:#E8B4B8;
+  --sage:#7A9E87;--sage-light:#EAF2EC;
+  --gold:#C9A96E;--gold-light:#FAF3E7;
+  --cream:#FBF8F5;--ivory:#F5F0E8;
+  --text:#2A1F1A;--text-muted:#8A7A72;--text-light:#BEB0A8;
+  --white:#FFFFFF;
+  --shadow:0 4px 24px rgba(42,31,26,0.10);
+  --shadow-sm:0 2px 8px rgba(42,31,26,0.07);
+  --r:16px;--r-sm:10px;--r-lg:28px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden;}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid #EDE5DF;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--rose);}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{padding:8px 16px;border-radius:var(--r-sm);border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-muted);cursor:pointer;transition:all .2s;}
+.nav-tab.active{background:var(--rose-light);color:var(--rose);font-weight:500;}
+.nav-tab:hover:not(.active){background:var(--ivory);}
+
+/* PAGES */
+.page{display:none;min-height:calc(100vh - 64px);}
+.page.active{display:block;}
+
+/* ══════════════════════════════
+   PAGE 1: HOME
+══════════════════════════════ */
+.hero{background:linear-gradient(135deg,#FBF8F5 60%,#F7E8EA);padding:5rem 2rem 4rem;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;position:relative;overflow:hidden;}
+.hero-blob{position:absolute;top:-60px;right:-80px;width:340px;height:340px;background:var(--rose-light);border-radius:50%;opacity:0.6;}
+.hero-blob2{position:absolute;bottom:-80px;left:-60px;width:260px;height:260px;background:#EAF2EC;border-radius:50%;opacity:0.5;}
+.hero-badge{display:inline-block;background:var(--rose-light);color:var(--rose);font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;margin-bottom:1.5rem;letter-spacing:0.5px;position:relative;}
+.hero h1{font-size:58px;font-weight:600;line-height:1.1;color:var(--text);margin-bottom:1.25rem;position:relative;}
+.hero h1 em{color:var(--rose);font-style:italic;}
+.hero p{font-size:17px;color:var(--text-muted);max-width:480px;line-height:1.7;margin-bottom:2.5rem;position:relative;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;}
+.btn-primary{background:var(--rose);color:#fff;border:none;padding:14px 32px;border-radius:var(--r-lg);font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-primary:hover{background:#b5636d;transform:translateY(-1px);}
+.btn-secondary{background:transparent;color:var(--text);border:1.5px solid #DDD5CE;padding:14px 28px;border-radius:var(--r-lg);font-size:15px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-secondary:hover{border-color:var(--rose);color:var(--rose);}
+
+.features{padding:4rem 2rem;max-width:900px;margin:0 auto;}
+.features h2{font-size:36px;text-align:center;margin-bottom:2.5rem;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+.feature-card{background:var(--white);border-radius:var(--r);padding:1.75rem;border:1px solid #EDE5DF;transition:all .2s;}
+.feature-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem;}
+.fi-rose{background:var(--rose-light);}
+.fi-sage{background:var(--sage-light);}
+.fi-gold{background:var(--gold-light);}
+.fi-blue{background:#EBF0FA;}
+.feature-card h3{font-size:18px;margin-bottom:8px;}
+.feature-card p{font-size:14px;color:var(--text-muted);line-height:1.6;}
+
+.stats{background:var(--rose);padding:3rem 2rem;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;}
+.stat{text-align:center;color:#fff;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;display:block;}
+.stat-label{font-size:14px;opacity:0.85;}
+
+/* ══════════════════════════════
+   PAGE 2: SKIN DETECTION
+══════════════════════════════ */
+.page-header{padding:3rem 2rem 1rem;text-align:center;}
+.page-header h2{font-size:42px;margin-bottom:0.75rem;}
+.page-header p{font-size:16px;color:var(--text-muted);}
+
+.detection-area{max-width:780px;margin:2rem auto;padding:0 2rem 3rem;}
+.upload-box{background:var(--white);border:2px dashed #DDD5CE;border-radius:var(--r);padding:3rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.upload-box:hover{border-color:var(--rose);background:var(--rose-light);}
+.upload-icon{font-size:48px;margin-bottom:1rem;}
+.upload-box h3{font-size:22px;margin-bottom:8px;}
+.upload-box p{font-size:14px;color:var(--text-muted);}
+
+#preview-section{display:none;margin-top:1.5rem;}
+.preview-wrap{border-radius:var(--r);overflow:hidden;background:#000;max-height:320px;display:flex;align-items:center;justify-content:center;}
+.preview-wrap img{width:100%;max-height:320px;object-fit:contain;}
+
+.spinner{display:none;text-align:center;padding:2rem;}
+.spin{width:40px;height:40px;border:3px solid var(--rose-light);border-top-color:var(--rose);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#result-section{display:none;margin-top:1.5rem;background:var(--white);border-radius:var(--r);padding:2rem;border:1px solid #EDE5DF;}
+.skin-type-badge{display:inline-block;background:var(--rose);color:#fff;padding:8px 24px;border-radius:20px;font-size:15px;font-weight:500;margin-bottom:0.5rem;}
+.acne-badge{display:inline-block;background:#C87070;color:#fff;padding:8px 24px;border-radius:20px;font-size:15px;font-weight:500;margin-bottom:1.5rem;margin-left:8px;}
+.no-acne-badge{display:inline-block;background:var(--sage);color:#fff;padding:8px 24px;border-radius:20px;font-size:15px;font-weight:500;margin-bottom:1.5rem;margin-left:8px;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem;}
+.result-item{background:var(--ivory);border-radius:var(--r-sm);padding:1rem 1.25rem;}
+.result-item label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;}
+.result-item span{font-size:15px;font-weight:500;}
+.meter-bar{height:8px;background:#EDE5DF;border-radius:4px;margin-top:8px;overflow:hidden;}
+.meter-fill{height:100%;border-radius:4px;background:var(--rose);transition:width .8s ease;}
+.tips-box{background:var(--sage-light);border-radius:var(--r-sm);padding:1.25rem;margin-bottom:1.5rem;border-left:3px solid var(--sage);}
+.tips-box p{font-size:14px;line-height:1.7;color:var(--text);}
+
+/* ══════════════════════════════
+   PAGE 3: PRODUCTS
+══════════════════════════════ */
+.concerns-wrap{max-width:860px;margin:0 auto;padding:0 2rem 3rem;}
+.concern-chips{display:flex;flex-wrap:wrap;gap:10px;margin:1.5rem 0;}
+.chip{padding:10px 20px;border-radius:20px;border:1.5px solid #DDD5CE;background:var(--white);font-size:14px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;color:var(--text);}
+.chip.selected{background:var(--rose);color:#fff;border-color:var(--rose);}
+.chip:hover:not(.selected){border-color:var(--rose);color:var(--rose);}
+
+#products-grid{display:none;margin-top:1rem;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+.product-card{background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid #EDE5DF;transition:all .2s;}
+.product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.product-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:56px;}
+.product-body{padding:1.25rem;}
+.product-badge{font-size:11px;color:var(--rose);font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.product-name{font-size:16px;font-weight:500;margin-bottom:6px;}
+.product-desc{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:12px;}
+.product-footer{display:flex;align-items:center;justify-content:space-between;}
+.product-price{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--rose);}
+.add-btn{background:var(--rose-light);color:var(--rose);border:none;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .2s;}
+.add-btn:hover{background:var(--rose);color:#fff;}
+
+/* ══════════════════════════════
+   PAGE 4: APPOINTMENT
+══════════════════════════════ */
+.appt-wrap{max-width:820px;margin:0 auto;padding:0 2rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.appt-card{background:var(--white);border-radius:var(--r);padding:2rem;border:1px solid #EDE5DF;}
+.appt-card h3{font-size:22px;margin-bottom:0.5rem;}
+.appt-card .desc{font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6;}
+.form-group{margin-bottom:1rem;}
+.form-group label{font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border-radius:var(--r-sm);border:1.5px solid #EDE5DF;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--cream);transition:.2s;outline:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--rose);}
+.form-group textarea{resize:vertical;min-height:80px;}
+.plan-cards{display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem;}
+.plan-card{border:1.5px solid #EDE5DF;border-radius:var(--r-sm);padding:1rem 1.25rem;cursor:pointer;transition:all .2s;position:relative;}
+.plan-card.selected{border-color:var(--rose);background:var(--rose-light);}
+.plan-card:hover:not(.selected){border-color:var(--rose-mid);}
+.plan-name{font-size:15px;font-weight:500;margin-bottom:4px;}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--rose);}
+.plan-desc{font-size:13px;color:var(--text-muted);margin-top:4px;}
+.plan-badge{position:absolute;top:12px;right:12px;background:var(--rose);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;}
+.pay-btn{width:100%;padding:14px;border-radius:var(--r-lg);background:var(--rose);color:#fff;border:none;font-size:16px;font-family:'Cormorant Garamond',serif;font-weight:600;cursor:pointer;transition:all .2s;}
+.pay-btn:hover{background:#b5636d;}
+.success-msg{display:none;background:var(--sage-light);border:1px solid #B5D4BF;border-radius:var(--r-sm);padding:1rem;margin-top:1rem;font-size:14px;color:#3B6B4C;text-align:center;}
+.dermat-card{display:flex;align-items:center;gap:14px;border:1.5px solid #EDE5DF;border-radius:var(--r-sm);padding:1rem;margin-bottom:12px;cursor:pointer;transition:all .2s;}
+.dermat-card:hover,.dermat-card.selected{border-color:var(--rose);background:var(--rose-light);}
+.dermat-avatar{width:52px;height:52px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.dermat-info h4{font-size:15px;font-weight:500;margin-bottom:2px;}
+.dermat-info p{font-size:13px;color:var(--text-muted);}
+.dermat-info .stars{color:var(--gold);font-size:13px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--r-sm);font-size:14px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:200;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* SERVER STATUS */
+.server-status{font-size:12px;padding:4px 10px;border-radius:20px;margin-left:12px;}
+.server-online{background:#EAF2EC;color:#3B6B4C;}
+.server-offline{background:#FDECEA;color:#C0392B;}
+
+@media(max-width:640px){
+  .appt-wrap{grid-template-columns:1fr;}
+  .result-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:36px;}
+  .stats{gap:2rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;">
+    <div class="nav-logo">✦ DermAI</div>
+    <span class="server-status" id="server-status">⏳ Checking...</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="gotoPage('home')">Home</button>
+    <button class="nav-tab" onclick="gotoPage('detect')">Skin Analysis</button>
+    <button class="nav-tab" onclick="gotoPage('products')">Products</button>
+    <button class="nav-tab" onclick="gotoPage('appt')">Book & Pay</button>
+  </div>
+</nav>
+
+<!-- ══ PAGE 1: HOME ══ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-blob"></div>
+    <div class="hero-blob2"></div>
+    <span class="hero-badge">✦ AI-Powered Skincare</span>
+    <h1>Your skin deserves<br><em>expert care</em></h1>
+    <p>Detect your skin type with real AI, get personalised product recommendations, and book a dermatologist — all in one place.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="gotoPage('detect')">Analyse My Skin →</button>
+      <button class="btn-secondary" onclick="gotoPage('products')">Browse Products</button>
+    </div>
+  </div>
+  <div class="features">
+    <h2>Everything your skin needs</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon fi-rose">🔬</div>
+        <h3>AI Skin Detection</h3>
+        <p>Upload a selfie and our trained AI model detects your skin type and acne in real time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-sage">🌿</div>
+        <h3>Smart Recommendations</h3>
+        <p>Get curated skincare products matched to your unique skin type and concerns.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-gold">👩‍⚕️</div>
+        <h3>Dermatologist Booking</h3>
+        <p>Connect with certified dermatologists online or in-clinic with easy appointment booking.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-blue">💳</div>
+        <h3>Secure Payments</h3>
+        <p>Pay for consultations safely with JazzCash, EasyPaisa or card — all supported.</p>
+      </div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="stat-num">50k+</span><span class="stat-label">Skin analyses done</span></div>
+    <div class="stat"><span class="stat-num">200+</span><span class="stat-label">Verified dermatologists</span></div>
+    <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Accuracy rate</span></div>
+    <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">User rating</span></div>
+  </div>
+</div>
+
+<!-- ══ PAGE 2: SKIN DETECTION ══ -->
+<div class="page" id="page-detect">
+  <div class="page-header">
+    <h2>AI Skin Analysis</h2>
+    <p>Upload a clear front-facing photo — our trained model will detect your skin type and acne</p>
+  </div>
+  <div class="detection-area">
+    <div class="upload-box" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="image/*" onchange="handleUpload(event)" onclick="event.stopPropagation()" style="display:none"/>
+      <div class="upload-icon">📸</div>
+      <h3>Upload your photo</h3>
+      <p>Click to browse · JPG, PNG supported</p>
+    </div>
+
+    <div id="preview-section">
+      <div class="preview-wrap" style="margin-top:1rem;">
+        <img id="preview-img" src="" alt="Preview"/>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:1rem;" onclick="analyzeImage()">
+        Analyse with AI ✦
+      </button>
+    </div>
+
+    <div class="spinner" id="spinner">
+      <div class="spin"></div>
+      <p style="font-size:14px;color:var(--text-muted)">Analysing with AI model...</p>
+    </div>
+
+    <div id="result-section">
+      <div style="margin-bottom:1rem">
+        <span class="skin-type-badge" id="skin-type-label">—</span>
+        <span id="acne-label"></span>
+      </div>
+      <div class="result-grid" id="result-grid"></div>
+      <div class="tips-box" id="tips-box"></div>
+      <button class="btn-primary" onclick="gotoPage('products')">View Recommended Products →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 3: PRODUCTS ══ -->
+<div class="page" id="page-products">
+  <div class="page-header">
+    <h2>Product Recommendations</h2>
+    <p>Select your skin concerns to find the perfect products</p>
+  </div>
+  <div class="concerns-wrap">
+    <p style="font-size:14px;color:var(--text-muted)">Choose your skin concerns:</p>
+    <div class="concern-chips">
+      <button class="chip" onclick="toggleChip(this)">Acne & Breakouts</button>
+      <button class="chip" onclick="toggleChip(this)">Dryness & Flaking</button>
+      <button class="chip" onclick="toggleChip(this)">Oiliness</button>
+      <button class="chip" onclick="toggleChip(this)">Dark Spots</button>
+      <button class="chip" onclick="toggleChip(this)">Anti-Aging</button>
+      <button class="chip" onclick="toggleChip(this)">Sensitivity</button>
+      <button class="chip" onclick="toggleChip(this)">Uneven Tone</button>
+      <button class="chip" onclick="toggleChip(this)">Dark Circles</button>
+      <button class="chip" onclick="toggleChip(this)">Large Pores</button>
+    </div>
+    <button class="btn-primary" onclick="findProducts()">Find My Products ✦</button>
+    <div id="products-grid">
+      <h3 style="font-size:24px;margin:1.5rem 0 1rem">Recommended for you</h3>
+      <div class="products-grid" id="products-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 4: APPOINTMENT & PAYMENT ══ -->
+<div class="page" id="page-appt">
+  <div class="page-header">
+    <h2>Book & Pay</h2>
+    <p>Choose a plan or book a dermatologist consultation</p>
+  </div>
+  <div class="appt-wrap">
+    <div class="appt-card">
+      <h3>Book a Dermatologist</h3>
+      <p class="desc">Consult with a certified skin expert online or in-clinic.</p>
+      <div class="dermat-card selected" onclick="selectDermat(this)">
+        <div class="dermat-avatar">👩‍⚕️</div>
+        <div class="dermat-info">
+          <h4>Dr. Ayesha Malik</h4>
+          <p>MBBS, FCPS Dermatology · Online</p>
+          <span class="stars">★★★★★</span> <span style="font-size:12px;color:var(--text-muted)">(142 reviews)</span>
+        </div>
+      </div>
+      <div class="dermat-card" onclick="selectDermat(this)">
+        <div class="dermat-avatar">👨‍⚕️</div>
+        <div class="dermat-info">
+          <h4>Dr. Usman Tariq</h4>
+          <p>MBBS, MD Dermatology · In-clinic</p>
+          <span class="stars">★★★★☆</span> <span style="font-size:12px;color:var(--text-muted)">(89 reviews)</span>
+        </div>
+      </div>
+      <div class="dermat-card" onclick="selectDermat(this)">
+        <div class="dermat-avatar">👩‍⚕️</div>
+        <div class="dermat-info">
+          <h4>Dr. Sara Khan</h4>
+          <p>MBBS, Skin & Laser Specialist · Online</p>
+          <span class="stars">★★★★★</span> <span style="font-size:12px;color:var(--text-muted)">(217 reviews)</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Preferred Date</label>
+        <input type="date" id="appt-date"/>
+      </div>
+      <div class="form-group">
+        <label>Preferred Time</label>
+        <select>
+          <option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option>
+          <option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Skin Concern</label>
+        <textarea placeholder="Describe your main concern..."></textarea>
+      </div>
+    </div>
+
+    <div class="appt-card">
+      <h3>Choose a Plan</h3>
+      <p class="desc">Pick the plan that suits your skincare journey.</p>
+      <div class="plan-cards">
+        <div class="plan-card" onclick="selectPlan(this)">
+          <div class="plan-name">Single Consultation</div>
+          <div class="plan-price">Rs. 1,500</div>
+          <div class="plan-desc">One video/text session with a dermatologist</div>
+        </div>
+        <div class="plan-card selected" onclick="selectPlan(this)">
+          <div class="plan-badge">Popular</div>
+          <div class="plan-name">Monthly Care Plan</div>
+          <div class="plan-price">Rs. 4,000 / mo</div>
+          <div class="plan-desc">4 sessions + personalised routine + product discounts</div>
+        </div>
+        <div class="plan-card" onclick="selectPlan(this)">
+          <div class="plan-name">Premium Annual</div>
+          <div class="plan-price">Rs. 35,000 / yr</div>
+          <div class="plan-desc">Unlimited sessions + lab tests + priority booking</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="pay-name" placeholder="Your full name"/>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="pay-email" placeholder="you@email.com"/>
+      </div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select>
+          <option>Credit / Debit Card</option>
+          <option>JazzCash</option>
+          <option>EasyPaisa</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Card / Account Number</label>
+        <input type="text" placeholder="XXXX XXXX XXXX XXXX"/>
+      </div>
+      <button class="pay-btn" onclick="handlePayment()">Confirm & Pay ✦</button>
+      <div class="success-msg" id="success-msg">✅ Booking confirmed! You'll receive a confirmation email shortly.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Flask backend URL ───────────────────────────────
+const BACKEND = 'http://127.0.0.1:5000';
+
+// ─── Check if Flask server is running ───────────────
+async function checkServer() {
+  try {
+    const res = await fetch(`${BACKEND}/health`, { method: 'GET' });
+    const data = await res.json();
+    if (data.status === 'running') {
+      document.getElementById('server-status').textContent = '🟢 AI Online';
+      document.getElementById('server-status').className = 'server-status server-online';
+    }
+  } catch {
+    document.getElementById('server-status').textContent = '🔴 AI Offline';
+    document.getElementById('server-status').className = 'server-status server-offline';
+  }
+}
+checkServer();
+setInterval(checkServer, 10000);
+
+// ─── Navigation ──────────────────────────────────────
+function gotoPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach((t, i) => {
+    t.classList.toggle('active', ['home','detect','products','appt'][i] === name);
+  });
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ─── Upload Handler ──────────────────────────────────
+let uploadedFile = null;
+
+function handleUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  uploadedFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('preview-section').style.display = 'block';
+    document.getElementById('result-section').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── Analyse Image with Flask backend ────────────────
+async function analyzeImage() {
+  if (!uploadedFile) return;
+
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('preview-section').style.display = 'none';
+
+  try {
+    const formData = new FormData();
+    formData.append('image', uploadedFile);
+
+    const res = await fetch(`${BACKEND}/predict`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) throw new Error('Server error');
+
+    const data = await res.json();
+    showResult(data);
+
+  } catch (err) {
+    // If server offline, use demo mode
+    console.warn('Server offline, using demo mode');
+    showDemoResult();
+  }
+
+  document.getElementById('spinner').style.display = 'none';
+}
+
+// ─── Show Real Result from Flask ─────────────────────
+function showResult(data) {
+  document.getElementById('skin-type-label').textContent = data.skin_type + ' Skin';
+
+  const acneEl = document.getElementById('acne-label');
+  if (data.has_acne) {
+    acneEl.innerHTML = `<span class="acne-badge">⚠️ Acne Detected (${data.acne_confidence}%)</span>`;
+  } else {
+    acneEl.innerHTML = `<span class="no-acne-badge">✅ No Acne (${data.acne_confidence}%)</span>`;
+  }
+
+  // Skin probabilities
+  const grid = document.getElementById('result-grid');
+  grid.innerHTML = Object.entries(data.all_skin_probs).map(([label, pct]) => `
+    <div class="result-item">
+      <label>${label.charAt(0).toUpperCase() + label.slice(1)}</label>
+      <span>${pct}%</span>
+      <div class="meter-bar"><div class="meter-fill" style="width:${pct}%"></div></div>
+    </div>
+  `).join('');
+
+  // Tips
+  const tips = getTips(data.skin_type.toLowerCase(), data.has_acne);
+  document.getElementById('tips-box').innerHTML = `<p>💡 <strong>Tips:</strong> ${tips}</p>`;
+
+  document.getElementById('result-section').style.display = 'block';
+
+  // Auto-select chips based on result
+  autoSelectChips(data);
+}
+
+// ─── Demo mode when server is offline ────────────────
+function showDemoResult() {
+  const demo = {
+    skin_type: 'Oily',
+    skin_confidence: 78.5,
+    has_acne: true,
+    acne_confidence: 82.3,
+    concerns: ['Acne', 'Oiliness'],
+    all_skin_probs: { dry: 8.2, normal: 13.3, oily: 78.5 }
+  };
+  showResult(demo);
+  showToast('⚠️ Demo mode — start Flask server for real AI');
+}
+
+// ─── Auto select chips from AI result ────────────────
+function autoSelectChips(data) {
+  const map = {
+    'oily': 'Oiliness',
+    'dry': 'Dryness & Flaking',
+    'acne': 'Acne & Breakouts'
+  };
+  document.querySelectorAll('.chip').forEach(chip => {
+    if (data.has_acne && chip.textContent === 'Acne & Breakouts') chip.classList.add('selected');
+    const key = data.skin_type.toLowerCase();
+    if (map[key] && chip.textContent === map[key]) chip.classList.add('selected');
+  });
+}
+
+// ─── Skin Tips ────────────────────────────────────────
+function getTips(skinType, hasAcne) {
+  const tips = {
+    oily: 'Use a gentle foaming cleanser, oil-free moisturiser, and niacinamide serum to control sebum production.',
+    dry: 'Use a hydrating cleanser, rich ceramide moisturiser, and hyaluronic acid serum to restore moisture.',
+    normal: 'Maintain with SPF daily, a gentle cleanser, and antioxidant serum.',
+    combination: 'Use a balanced cleanser and lightweight moisturiser. Target oily zones separately.',
+    sensitive: 'Use fragrance-free, hypoallergenic products. Focus on barrier repair with ceramides.'
+  };
+  let tip = tips[skinType] || tips.normal;
+  if (hasAcne) tip += ' For acne: add a salicylic acid toner and avoid touching your face.';
+  return tip;
+}
+
+// ─── Products ─────────────────────────────────────────
+const productDb = {
+  'Acne & Breakouts': [
+    {name:'Salicylic Cleanser',brand:'CeraVe',desc:'2% salicylic acid to unclog pores.',price:'Rs. 2,200',emoji:'🧴',bg:'#FFF0F0'},
+    {name:'Niacinamide 10%',brand:'The Ordinary',desc:'Controls oil and fades acne marks.',price:'Rs. 1,800',emoji:'💧',bg:'#F0F4FF'},
+  ],
+  'Dryness & Flaking': [
+    {name:'Hydrating Serum',brand:'L\'Oréal',desc:'Hyaluronic acid draws moisture into skin.',price:'Rs. 2,500',emoji:'💦',bg:'#EBF6FF'},
+    {name:'Barrier Cream',brand:'Eucerin',desc:'Rich ceramide cream restores skin barrier.',price:'Rs. 3,100',emoji:'🫙',bg:'#FFF5E0'},
+  ],
+  'Oiliness': [
+    {name:'Oil-Free Moisturiser',brand:'Neutrogena',desc:'Lightweight non-greasy hydration.',price:'Rs. 1,950',emoji:'🌬️',bg:'#F0FFF5'},
+    {name:'Clay Mask',brand:'Origins',desc:'Draws out impurities and minimises pores.',price:'Rs. 2,800',emoji:'🟤',bg:'#FBF3E8'},
+  ],
+  'Dark Spots': [
+    {name:'Vitamin C Serum',brand:'Skinceuticals',desc:'Brightens and fades hyperpigmentation.',price:'Rs. 4,500',emoji:'🍊',bg:'#FFF8E0'},
+    {name:'Alpha Arbutin 2%',brand:'The Ordinary',desc:'Reduces dark spots and uneven tone.',price:'Rs. 1,600',emoji:'⚪',bg:'#F8F8FF'},
+  ],
+  'Anti-Aging': [
+    {name:'Retinol 0.5%',brand:'RoC',desc:'Stimulates collagen to smooth fine lines.',price:'Rs. 3,800',emoji:'⏳',bg:'#FFF0FB'},
+    {name:'Peptide Eye Cream',brand:'Olay',desc:'Targets crow\'s feet and under-eye wrinkles.',price:'Rs. 2,900',emoji:'👁️',bg:'#F0F9F5'},
+  ],
+  'Sensitivity': [
+    {name:'Calming Toner',brand:'COSRX',desc:'Propolis-infused toner for reactive skin.',price:'Rs. 2,100',emoji:'🌸',bg:'#FFF0F5'},
+    {name:'Centella Gel',brand:'Purito',desc:'Soothes redness and strengthens skin.',price:'Rs. 1,700',emoji:'🌿',bg:'#EFF8F1'},
+  ],
+  'Uneven Tone': [
+    {name:'Glycolic Toner',brand:'Pixi',desc:'Exfoliates to reveal brighter skin.',price:'Rs. 2,600',emoji:'✨',bg:'#FFFCE0'},
+    {name:'Brightening SPF',brand:'La Roche-Posay',desc:'SPF50 with brightening niacinamide.',price:'Rs. 3,200',emoji:'☀️',bg:'#FFF9EC'},
+  ],
+  'Dark Circles': [
+    {name:'Caffeine Eye Serum',brand:'The Ordinary',desc:'Reduces puffiness and dark circles.',price:'Rs. 1,500',emoji:'☕',bg:'#F9F3EC'},
+  ],
+  'Large Pores': [
+    {name:'BHA Toner',brand:'Paula\'s Choice',desc:'2% BHA minimises pore size over time.',price:'Rs. 3,500',emoji:'🔬',bg:'#EEF3FF'},
+  ],
+};
+
+function toggleChip(el) { el.classList.toggle('selected'); }
+
+function findProducts() {
+  const selected = [...document.querySelectorAll('.chip.selected')].map(c => c.textContent);
+  if (!selected.length) { showToast('Please select at least one concern'); return; }
+  let products = [];
+  selected.forEach(concern => {
+    if (productDb[concern]) products.push(...productDb[concern]);
+  });
+  if (!products.length) products = productDb['Acne & Breakouts'];
+  const list = document.getElementById('products-list');
+  list.innerHTML = products.map(p => `
+    <div class="product-card">
+      <div class="product-img" style="background:${p.bg}">${p.emoji}</div>
+      <div class="product-body">
+        <div class="product-badge">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-footer">
+          <span class="product-price">${p.price}</span>
+          <button class="add-btn" onclick="showToast('Added to cart ✓')">+ Cart</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('products-grid').style.display = 'block';
+  document.getElementById('products-grid').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ─── Appointment ──────────────────────────────────────
+function selectDermat(el) {
+  document.querySelectorAll('.dermat-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function handlePayment() {
+  const name = document.getElementById('pay-name').value.trim();
+  const email = document.getElementById('pay-email').value.trim();
+  if (!name || !email) { showToast('Please fill in name and email'); return; }
+  document.getElementById('success-msg').style.display = 'block';
+  showToast('Payment successful! 🎉');
+}
+
+// ─── Toast ────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── Set today's date ─────────────────────────────────
+document.getElementById('appt-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
